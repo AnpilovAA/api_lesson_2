@@ -9,6 +9,9 @@ from requests.exceptions import HTTPError
 def shorten_link(token: str, url: str) -> None:
     response = get(url=url, params=token)
     response.raise_for_status()
+    if "error_code" in loads(response.text)['error']:
+        raise HTTPError
+    print(response.status_code, response.text)
     short_link = loads(response.text)["response"]["short_url"]
     return short_link
 
@@ -29,5 +32,5 @@ if __name__ == "__main__":
     try:
         short_link = shorten_link(token=params, url=url)
     except HTTPError:
-        print(HTTPError.response)
+        print(HTTPError)
     print("Сокращенная ссылка: ", short_link)
