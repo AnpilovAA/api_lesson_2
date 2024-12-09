@@ -33,7 +33,10 @@ def count_clicks(token: str, url: str):
         """
         print(f"Код ошибки {response.status_code}\nтекст: {response.text}")
         raise HTTPError
-    return loads(response.text)["response"]['stats'][0]["views"]
+    try:
+        return loads(response.text)["response"]['stats'][0]["views"]
+    except IndexError:
+        print("По ссылке еще не было переходов!")
 
 
 def is_shorten_link(url: str) -> bool:
@@ -47,9 +50,7 @@ if __name__ == "__main__":
     url = "https://api.vk.ru/method/utils.getShortLink"
     params = {
         "access_token": environ["TOKEN"],
-        # 'url': input("Вставьте ссылку: "),
-        # 'url': "hh.ru",
-        'url': "https://vk.cc/131s0Y",
+        'url': input("Вставьте ссылку: "),
         'string': "key",
         "private": 0,
         "v": 5.199,
@@ -73,8 +74,9 @@ if __name__ == "__main__":
         )
     except HTTPError:
         raise KeyboardInterrupt
-    print(clicks_count)
+    if clicks_count is not None:
+        print(clicks_count)
     if is_shorten_link(params["url"]):
-        print("ссылка короткая")
+        print("Cсылка короткая")
     else:
-        print("ссылка длинная")
+        print("Cсылка длинная")
