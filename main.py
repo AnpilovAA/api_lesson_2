@@ -8,7 +8,7 @@ from requests import get
 from requests.exceptions import HTTPError
 
 
-def shorten_link(token: str, url: str) -> None:
+def shorten_link(token: dict, url: str) -> str:
     if is_shorten_link(token['url']):
         return token['url']
     else:
@@ -24,7 +24,7 @@ def shorten_link(token: str, url: str) -> None:
         return short_link
 
 
-def count_clicks(token: str, url: str):
+def count_clicks(token: dict, url: str) -> str:
     response = get(url=url, params=token)
     response.raise_for_status()
     if "error" in loads(response.text):
@@ -75,8 +75,8 @@ if __name__ == "__main__":
     except HTTPError:
         raise KeyboardInterrupt
     if clicks_count is not None:
-        print(clicks_count)
+        print("Количетсво кликов: ", clicks_count)
     if is_shorten_link(params["url"]):
-        print("Cсылка короткая")
+        print("Ссылка короткая")
     else:
-        print("Cсылка длинная")
+        print("Ссылка длинная")
