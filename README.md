@@ -45,11 +45,10 @@ For Unix/Linux you have to install pip
 - python -m pip install -r requirements.txt
 
 ### Fifth step dependency file
-- create a config.py file
-- create in to config.py 1 globals variable
-
-- `KEY = "Your KEY"`
-### sixth step launch the program
+- create a .env file
+- create in to .env 1 globals variable
+- `TOKEN = "Your token VK API"`
+### Sixth step launch the program
 
 For Windows
 - py main.py
