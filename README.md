@@ -14,10 +14,10 @@ Receives a token and URL, sends a get request and returns the number of clicks o
 ## Is shorten link
 Checks whether the received URL is short?
 
-## Installation guide
+# Installation guide
 
 ### First step clone this project
-- git clone https://github.com/AnpilovAA/lesson_8
+- git clone https://github.com/AnpilovAA/api_lesson_2
 
 ### Second step install virtual environment
 
