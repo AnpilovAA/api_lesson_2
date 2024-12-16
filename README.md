@@ -47,7 +47,7 @@ For Unix/Linux you have to install pip
 ### Fifth step dependency file
 - create a .env file
 - create in to .env 1 globals variable
-- `TOKEN = "Your token VK API"`
+- `TOKEN="Your token VK API"`
 ### Sixth step launch the program
 
 For Windows
