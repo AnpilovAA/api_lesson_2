@@ -53,7 +53,7 @@ https://pip.pypa.io/en/stable/installation/#
 ### Fifth step dependency file
 - create a .env file
 - create in to .env 1 globals variable
-- `TOKEN="Your token VK API"`
+- `VK_TOKEN="Your token VK API"`
 ### Sixth step launch the program
 
 For Windows
