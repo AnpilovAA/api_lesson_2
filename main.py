@@ -1,4 +1,3 @@
-from json import loads
 from urllib.parse import urlparse
 from os import environ
 
@@ -10,30 +9,42 @@ from requests.exceptions import HTTPError
 
 def shorten_link(token: dict) -> str:
     url = "https://api.vk.ru/method/utils.getShortLink"
-    response = get(url=url, params=token)
+    params = {
+        "access_token": token["vk_token"],
+        'url': token['url'],
+        'string': "key",
+        "private": 0,
+        "v": 5.199,
+        }
+    response = get(url=url, params=params)
     response.raise_for_status()
-    if "error" in loads(response.text):
+    if "error" in response.json():
         """"
         these conditions help to detect the error
         """
         print(f"Код ошибки {response.status_code}, \nтекст: {response.text}")
         raise HTTPError
-    short_link = loads(response.text)["response"]["short_url"]
+    short_link = response.json()["response"]["short_url"]
     return short_link
 
 
 def count_clicks(token: dict) -> str:
     url = "https://api.vk.ru/method/utils.getLinkStats"
-    response = get(url=url, params=token)
+    params = {
+        "key": token["short_link"],
+        "access_token": token['vk_token'],
+        "v": 5.199
+        }
+    response = get(url=url, params=params)
     response.raise_for_status()
-    if "error" in loads(response.text):
+    if "error" in response.json():
         """"
         these conditions help to detect the error
         """
         print(f"Код ошибки {response.status_code}\nтекст: {response.text}")
         raise HTTPError
     try:
-        return loads(response.text)["response"]['stats'][0]["views"]
+        return response.json()["response"]['stats'][0]["views"]
     except IndexError:
         print("По ссылке еще не было переходов!")
 
@@ -49,21 +60,18 @@ if __name__ == "__main__":
     vk_token = environ["VK_TOKEN"]
 
     params_short_link = {
-        "access_token": vk_token,
-        'url': input("Вставьте ссылку: "),
-        'string': "key",
-        "private": 0,
-        "v": 5.199,
-    }
+        "vk_token": vk_token,
+        'url': input("Вставьте ссылку: ")
+        }
+
     link = params_short_link["url"]
 
+    params_stat_method = {
+        "key": urlparse(link).path.strip('/'),
+        "access_token": vk_token
+        }
     if is_shorten_link(link):
         print("Ссылка короткая")
-        params_stat_method = {
-            "key": urlparse(link).path.strip('/'),
-            "access_token": vk_token,
-            "v": 5.199,
-        }
         try:
             clicks_count = count_clicks(token=params_stat_method)
         except HTTPError:
