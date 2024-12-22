@@ -17,32 +17,38 @@ Checks whether the received URL is short?
 # Installation guide
 
 ### First step clone this project
-- git clone https://github.com/AnpilovAA/api_lesson_2
+ ```git clone https://github.com/AnpilovAA/api_lesson_2```
 
 ### Second step install virtual environment
 
 For Windows
-- py -m venv env 
+
+ ```py -m venv env``` 
 
 For Unix or MacOS
-- python3 -m venv env
+
+```python3 -m venv env```
 
 ### Third step activate virtual environment
 
 For Windows
-- path\to\env\Scripts\activate
+
+```path\to\env\Scripts\activate```
 
 For Unix or MacOS
-- source path/to/env/bin/activate
+
+```source path/to/env/bin/activate```
 
 ### Fourth step install dependencies
 
 For Windows
-- py -m pip install -r requirement.txt
+
+```py -m pip install -r requirement.txt```
 
 For Unix/Linux you have to install pip
-- https://pip.pypa.io/en/stable/installation/#
-- python -m pip install -r requirements.txt
+https://pip.pypa.io/en/stable/installation/#
+
+```python -m pip install -r requirements.txt```
 
 ### Fifth step dependency file
 - create a .env file
@@ -51,7 +57,9 @@ For Unix/Linux you have to install pip
 ### Sixth step launch the program
 
 For Windows
-- py main.py
+
+```py main.py```
 
 For Unix or MacOS
-- python3 main.py
+
+```python3 main.py```
