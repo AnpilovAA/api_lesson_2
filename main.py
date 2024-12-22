@@ -8,10 +8,11 @@ from requests import get
 from requests.exceptions import HTTPError
 
 
-def shorten_link(token: dict, url: str) -> str:
+def shorten_link(token: dict) -> str:
     if is_shorten_link(token['url']):
         return token['url']
     else:
+        url = "https://api.vk.ru/method/utils.getShortLink"
         response = get(url=url, params=token)
         response.raise_for_status()
         if "error" in loads(response.text):
@@ -24,7 +25,8 @@ def shorten_link(token: dict, url: str) -> str:
         return short_link
 
 
-def count_clicks(token: dict, url: str) -> str:
+def count_clicks(token: dict) -> str:
+    url = "https://api.vk.ru/method/utils.getLinkStats"
     response = get(url=url, params=token)
     response.raise_for_status()
     if "error" in loads(response.text):
@@ -47,7 +49,6 @@ def is_shorten_link(url: str) -> bool:
 
 if __name__ == "__main__":
     load_dotenv(dotenv_path=find_dotenv())
-    url = "https://api.vk.ru/method/utils.getShortLink"
     vk_token = environ["VK_TOKEN"]
     params = {
         "access_token": vk_token,
@@ -57,22 +58,18 @@ if __name__ == "__main__":
         "v": 5.199,
     }
     try:
-        short_link = shorten_link(token=params, url=url)
+        short_link = shorten_link(token=params)
         print(short_link)
     except HTTPError:
         raise KeyboardInterrupt
 
-    url_stat_method = "https://api.vk.ru/method/utils.getLinkStats"
     params_stat_method = {
         "key": urlparse(short_link).path.strip('/'),
         "access_token": vk_token,
         "v": 5.199,
     }
     try:
-        clicks_count = count_clicks(
-            token=params_stat_method,
-            url=url_stat_method
-        )
+        clicks_count = count_clicks(token=params_stat_method)
     except HTTPError:
         raise KeyboardInterrupt
     if clicks_count is not None:
