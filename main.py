@@ -19,9 +19,6 @@ def shorten_link(token: dict) -> str:
     response = get(url=url, params=params)
     response.raise_for_status()
     if "error" in response.json():
-        """"
-        these conditions help to detect the error
-        """
         return response.json()
     short_link = response.json()["response"]["short_url"]
     return short_link
@@ -37,9 +34,6 @@ def count_clicks(token: dict) -> str:
     response = get(url=url, params=params)
     response.raise_for_status()
     if "error" in response.json():
-        """"
-        these conditions help to detect the error
-        """
         return response.json()
     return response.json()["response"]['stats'][0]["views"]
 
