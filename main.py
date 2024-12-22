@@ -48,8 +48,9 @@ def is_shorten_link(url: str) -> bool:
 if __name__ == "__main__":
     load_dotenv(dotenv_path=find_dotenv())
     url = "https://api.vk.ru/method/utils.getShortLink"
+    vk_token = environ["TOKEN"]
     params = {
-        "access_token": environ["TOKEN"],
+        "access_token": vk_token,
         'url': input("Вставьте ссылку: "),
         'string': "key",
         "private": 0,
@@ -64,7 +65,7 @@ if __name__ == "__main__":
     url_stat_method = "https://api.vk.ru/method/utils.getLinkStats"
     params_stat_method = {
         "key": urlparse(short_link).path.strip('/'),
-        "access_token": environ["TOKEN"],
+        "access_token": vk_token,
         "v": 5.199,
     }
     try:
