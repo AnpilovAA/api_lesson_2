@@ -22,8 +22,7 @@ def shorten_link(token: dict) -> str:
         """"
         these conditions help to detect the error
         """
-        print(f"Код ошибки {response.status_code}, \nтекст: {response.text}")
-        raise HTTPError
+        return response.json()
     short_link = response.json()["response"]["short_url"]
     return short_link
 
@@ -41,12 +40,11 @@ def count_clicks(token: dict) -> str:
         """"
         these conditions help to detect the error
         """
-        print(f"Код ошибки {response.status_code}\nтекст: {response.text}")
-        raise HTTPError
+        return response.json()
     try:
         return response.json()["response"]['stats'][0]["views"]
     except IndexError:
-        print("По ссылке еще не было переходов!")
+        return None
 
 
 def is_shorten_link(url: str) -> bool:
@@ -70,18 +68,29 @@ if __name__ == "__main__":
         "key": urlparse(link).path.strip('/'),
         "access_token": vk_token
         }
+
     if is_shorten_link(link):
         print("Ссылка короткая")
         try:
             clicks_count = count_clicks(token=params_stat_method)
+            if clicks_count["error"]:
+                error = clicks_count["error"]
+                print(f"Код ошибки {error['error_code']}, \nтекст: {error['error_msg']}")
+                raise HTTPError
         except HTTPError:
             raise KeyboardInterrupt
         if clicks_count is not None:
             print("Количетсво кликов: ", clicks_count)
+        else:
+            print("По ссылке еще не было переходов!")
     else:
         try:
             print("Ссылка длинная")
             short_link = shorten_link(token=params_short_link)
+            if short_link["error"]:
+                error = short_link["error"]
+                print(f"Код ошибки {error['error_code']}, \nтекст: {error['error_msg']}")
+                raise HTTPError
             print(short_link)
         except HTTPError:
             raise KeyboardInterrupt
