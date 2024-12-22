@@ -15,7 +15,7 @@ def shorten_link(token: dict) -> str:
         'string': "key",
         "private": 0,
         "v": 5.199,
-        }
+    }
     response = get(url=url, params=params)
     response.raise_for_status()
     if "error" in response.json():
@@ -30,10 +30,10 @@ def shorten_link(token: dict) -> str:
 def count_clicks(token: dict) -> str:
     url = "https://api.vk.ru/method/utils.getLinkStats"
     params = {
-        "key": token["short_link"],
-        "access_token": token['vk_token'],
+        "key": token["key"],
+        "access_token": token['access_token'],
         "v": 5.199
-        }
+    }
     response = get(url=url, params=params)
     response.raise_for_status()
     if "error" in response.json():
@@ -41,16 +41,23 @@ def count_clicks(token: dict) -> str:
         these conditions help to detect the error
         """
         return response.json()
-    try:
-        return response.json()["response"]['stats'][0]["views"]
-    except IndexError:
-        return None
+    return response.json()["response"]['stats'][0]["views"]
 
 
-def is_shorten_link(url: str) -> bool:
-    if urlparse(url).netloc == "vk.cc":
-        return True
-    return False
+def is_shorten_link(token: dict) -> bool:
+    url = "https://api.vk.ru/method/utils.getShortLink"
+    params = {
+        "access_token": token["vk_token"],
+        'url': token['url'],
+        'string': "key",
+        "private": 0,
+        "v": 5.199,
+    }
+    response = get(url=url, params=params)
+    response.raise_for_status()
+    if "error" not in response.json():
+        return False
+    return True
 
 
 if __name__ == "__main__":
@@ -60,16 +67,21 @@ if __name__ == "__main__":
     params_short_link = {
         "vk_token": vk_token,
         'url': input("Вставьте ссылку: ")
-        }
+    }
 
     link = params_short_link["url"]
 
     params_stat_method = {
         "key": urlparse(link).path.strip('/'),
         "access_token": vk_token
-        }
+    }
 
-    if is_shorten_link(link):
+    check_link = {
+        "vk_token": vk_token,
+        'url': link
+    }
+
+    if is_shorten_link(check_link):
         print("Ссылка короткая")
         try:
             clicks_count = count_clicks(token=params_stat_method)
@@ -79,15 +91,16 @@ if __name__ == "__main__":
                 raise HTTPError
         except HTTPError:
             raise KeyboardInterrupt
+        except IndexError:
+            print("По ссылке еще не было переходов!")
+            raise KeyboardInterrupt
         if clicks_count is not None:
             print("Количетсво кликов: ", clicks_count)
-        else:
-            print("По ссылке еще не было переходов!")
     else:
         try:
             print("Ссылка длинная")
             short_link = shorten_link(token=params_short_link)
-            if short_link["error"]:
+            if "error" in short_link:
                 error = short_link["error"]
                 print(f"Код ошибки {error['error_code']}, \nтекст: {error['error_msg']}")
                 raise HTTPError
